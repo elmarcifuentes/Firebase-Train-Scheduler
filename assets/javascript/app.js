@@ -57,22 +57,17 @@ database.ref().on("child_added", function(snapshot) {
 
 
     //********** convert time using Moment.js **********\\
-    var trainTimeConversion = moment(trainTime, 'HH:mm').subtract(1, 'years');
-
-    //---------- moment().diff | difference Between Times ----------\\
-    var timeDifference = moment().diff(moment(trainTimeConversion), 'minutes');
-
-    // divide time diference by train frequency
+    // var trainTimeMoment = moment(trainTime,"hh:mm");  ==== Does not work properly unless you push the date back
+    var trainTimeMoment = moment(trainTime, 'HH:mm').subtract(1, 'years');
+    var timeDifference = moment().diff(trainTimeMoment, "minutes");
     var timeRemainder = timeDifference % frequency;
-
-    // frequency minus time remaining
     var minutesAway = frequency - timeRemainder;
+    var nextArrival = moment().add(minutesAway, "minutes");
+    // Assignment is asking for military input but it then displays standard time within the table on sample image.
+    // Next Arrival was modified from HH:mm to hh:mm to convert from military time input
+    console.log(moment(nextArrival).format("hh:mm"));
 
-    // next arrival
-    var nextArrival = moment().add(minutesAway, 'minutes');
-    console.log(moment(nextArrival).format('HH:mm A'));
 
-
-    $("#train-table > tbody").append("<tr><td>" + trainName + "</td><td>" + destination + "</td><td>" + frequency + "</td><td>" + moment(nextArrival).format('HH:mm A') + "</td><td>" + minutesAway + "</td></tr>");
+    $("#train-table > tbody").append("<tr><td>" + trainName + "</td><td>" + destination + "</td><td>" + frequency + "</td><td>" + moment(nextArrival).format("hh:mm") + "</td><td>" + minutesAway + "</td></tr>");
 
 });
